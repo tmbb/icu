@@ -71,4 +71,14 @@ defmodule Icu.MessageFormat.Parser do
 
   # parses a complete stringa as a message
   defparsec(:full_message, parsec(:message) |> eos())
+
+  def parse_message(text) do
+    case full_message(text) do
+      {:ok, [message], "", _, _, _} ->
+        {:ok, message}
+
+      {:error, error_message, _, _, _} ->
+        {:error, error_message}
+    end
+  end
 end

@@ -30,7 +30,8 @@ defmodule Icu.MixProject do
       {:ex_cldr_lists, "~> 2.0"},
       {:ex_cldr_units, "~> 2.1"},
       # JSON decoder library
-      {:jason, "~> 1.0"}
+      {:jason, "~> 1.0"},
+      {:stream_data, "~> 0.4.2", only: [:test, :dev]}
     ]
   end
 end

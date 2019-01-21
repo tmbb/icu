@@ -8,4 +8,5 @@
   "ex_cldr_units": {:hex, :ex_cldr_units, "2.1.0", "fa1bbab9dc97aa717ca19d7bd1ba5716b5f47d1f39551a27065d609f8a337c9c", [:mix], [{:ex_cldr, "~> 2.1", [hex: :ex_cldr, repo: "hexpm", optional: false]}, {:ex_cldr_lists, "~> 2.0", [hex: :ex_cldr_lists, repo: "hexpm", optional: false]}, {:ex_cldr_numbers, "~> 2.1", [hex: :ex_cldr_numbers, repo: "hexpm", optional: false]}, {:jason, "~> 1.0", [hex: :jason, repo: "hexpm", optional: true]}], "hexpm"},
   "jason": {:hex, :jason, "1.1.2", "b03dedea67a99223a2eaf9f1264ce37154564de899fd3d8b9a21b1a6fd64afe7", [:mix], [{:decimal, "~> 1.0", [hex: :decimal, repo: "hexpm", optional: true]}], "hexpm"},
   "nimble_parsec": {:hex, :nimble_parsec, "0.5.0", "90e2eca3d0266e5c53f8fbe0079694740b9c91b6747f2b7e3c5d21966bba8300", [:mix], [], "hexpm"},
+  "stream_data": {:hex, :stream_data, "0.4.2", "fa86b78c88ec4eaa482c0891350fcc23f19a79059a687760ddcf8680aac2799b", [:mix], [], "hexpm"},
 }

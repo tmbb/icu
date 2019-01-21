@@ -1,8 +1,4 @@
 defmodule Icu.MessageFormat.NoneArgument do
-  import NimbleParsec
-  alias Icu.MessageFormat.Parser.Utils, as: U
-  alias Icu.MessageFormat.Variable
-
   defstruct [
     :variable,
     :metadata
