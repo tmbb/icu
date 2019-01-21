@@ -12,14 +12,14 @@ defmodule Icu.MessageFormat.Parser.Utils do
 
   @doc false
   def __unwrap_and_add_location__(_rest, [arg], context, line, offset) do
-    {line_offset, line_nr} = line
+    {line_nr, line_offset} = line
     metadata = %{line: line_nr, line_offset: line_offset, offset: offset}
     {[{arg, metadata}], context}
   end
 
   @doc false
   def __add_location__(_rest, args, context, line, offset) do
-    {line_offset, line_nr} = line
+    {line_nr, line_offset} = line
     metadata = %{line: line_nr, line_offset: line_offset, offset: offset}
     {[{args, metadata}], context}
   end
@@ -71,6 +71,12 @@ defmodule Icu.MessageFormat.Parser.Utils do
   def one_or_more(combinator) do
     combinator
     |> repeat(ignore(whitespace()) |> concat(combinator))
+  end
+
+  def zero_or_more(combinator) do
+    combinator
+    |> repeat(ignore(whitespace()) |> concat(combinator))
+    |> optional()
   end
 
   def arg_style(options, extra \\ []) do

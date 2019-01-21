@@ -1,23 +1,7 @@
 defmodule Icu.MessageFormat.Parser.SimpleArgument do
   import NimbleParsec
   alias Icu.MessageFormat.Parser.Utils, as: U
-
-  alias Icu.MessageFormat.Parser.{
-    SimpleArgument,
-    Variable,
-    Style
-  }
-
-  defstruct [
-    :type,
-    :variable,
-    :style,
-    :metadata
-  ]
-
-  def new(opts) do
-    struct(__MODULE__, opts)
-  end
+  alias Icu.MessageFormat.{Variable, Style, SimpleArgument}
 
   def make_simple_arg({data, metadata}, type) do
     style =

@@ -4,25 +4,19 @@ defmodule Icu.MessageFormat.Parser do
 
   alias Icu.MessageFormat.Parser.{
     NoneArgument,
-    SimpleArgument
+    SimpleArgument,
+    PluralArgument,
+    SelectArgument,
+    SelectOrdinalArgument
   }
 
-  # argument_number is not supported by design!
+  alias SimpleArgument.Currency
 
-  currency_code = utf8_string([not: ?{, not: ?}, not: ?\s], min: 1)
+  alias Icu.MessageFormat.Message
 
-  currency =
-    choice([
-      # Currency with code
-      replace(string("currency"), :currency)
-      |> ignore(string(":"))
-      |> concat(currency_code)
-      |> reduce({List, :to_tuple, []}),
-      # Currency without code
-      replace(string("currency"), :currency)
-    ])
+  # numbered arguments (instead of named arguments) are not supported by design!
 
-  number_arg_style = U.arg_style(~w(integer percent)a, [currency])
+  number_arg_style = U.arg_style(~w(integer percent)a, [Currency.combinator()])
   date_arg_style = U.arg_style(~w(short medium long full)a)
   time_arg_style = U.arg_style(~w(short medium long full)a)
   spellout_arg_style = nil
@@ -47,10 +41,14 @@ defmodule Icu.MessageFormat.Parser do
     duration_arg
   ]
 
+  plural_arg = PluralArgument.combinator(parsec(:message))
+  select_arg = SelectArgument.combinator(parsec(:message))
+  selectordinal_arg = SelectOrdinalArgument.combinator(parsec(:message))
+
   complex_arg = [
-    # plural_arg,
-    # select_arg,
-    # selectordinal_arg
+    plural_arg,
+    select_arg,
+    selectordinal_arg
   ]
 
   argument = choice([none_arg] ++ simple_arg ++ complex_arg)
@@ -62,6 +60,15 @@ defmodule Icu.MessageFormat.Parser do
         argument
       ])
     )
+    |> reduce({__MODULE__, :make_message, []})
 
+  def make_message(segments) do
+    Message.new(segments: segments)
+  end
+
+  # Parses a message which may or may not be only part of the string
   defparsec(:message, message)
+
+  # parses a complete stringa as a message
+  defparsec(:full_message, parsec(:message) |> eos())
 end
