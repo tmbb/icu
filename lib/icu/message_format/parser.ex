@@ -2,6 +2,11 @@ defmodule Icu.MessageFormat.Parser do
   import NimbleParsec
   alias Icu.MessageFormat.Parser.Utils, as: U
 
+  alias Icu.MessageFormat.Parser.{
+    NoneArgument,
+    SimpleArgument
+  }
+
   # argument_number is not supported by design!
 
   currency_code = utf8_string([not: ?{, not: ?}, not: ?\s], min: 1)
@@ -24,14 +29,14 @@ defmodule Icu.MessageFormat.Parser do
   ordinal_arg_style = nil
   duration_arg_style = nil
 
-  none_arg = U.seq(["{", unwrap_and_tag(U.arg_name(), :variable), "}"]) |> tag(:none)
+  none_arg = NoneArgument.combinator()
 
-  number_arg = U.simple_arg("number", number_arg_style)
-  date_arg = U.simple_arg("date", date_arg_style)
-  time_arg = U.simple_arg("time", time_arg_style)
-  spellout_arg = U.simple_arg("spellout", spellout_arg_style)
-  ordinal_arg = U.simple_arg("ordinal", ordinal_arg_style)
-  duration_arg = U.simple_arg("duration", duration_arg_style)
+  number_arg = SimpleArgument.combinator(:number, number_arg_style)
+  date_arg = SimpleArgument.combinator(:date, date_arg_style)
+  time_arg = SimpleArgument.combinator(:time, time_arg_style)
+  spellout_arg = SimpleArgument.combinator(:spellout, spellout_arg_style)
+  ordinal_arg = SimpleArgument.combinator(:ordinal, ordinal_arg_style)
+  duration_arg = SimpleArgument.combinator(:duration, duration_arg_style)
 
   simple_arg = [
     number_arg,

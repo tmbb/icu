@@ -2,12 +2,6 @@ defmodule Icu.MessageFormat.Parser.Utils do
   @moduledoc false
   import NimbleParsec
 
-  alias Icu.MessageFormat.Parser.{
-    SimpleArgument,
-    Variable,
-    Style
-  }
-
   def add_location(combinator) do
     pre_traverse(combinator, {__MODULE__, :__add_location__, []})
   end
@@ -18,15 +12,15 @@ defmodule Icu.MessageFormat.Parser.Utils do
 
   @doc false
   def __unwrap_and_add_location__(_rest, [arg], context, line, offset) do
-    {line_nr, column_bytes} = line
-    metadata = %{line: line_nr, column_bytes: column_bytes, offset: offset}
+    {line_offset, line_nr} = line
+    metadata = %{line: line_nr, line_offset: line_offset, offset: offset}
     {[{arg, metadata}], context}
   end
 
   @doc false
   def __add_location__(_rest, args, context, line, offset) do
-    {line_nr, column_bytes} = line
-    metadata = %{line: line_nr, column_bytes: column_bytes, offset: offset}
+    {line_offset, line_nr} = line
+    metadata = %{line: line_nr, line_offset: line_offset, offset: offset}
     {[{args, metadata}], context}
   end
 
@@ -90,60 +84,5 @@ defmodule Icu.MessageFormat.Parser.Utils do
     all_choices = fixed_options ++ extra
 
     choice(all_choices)
-  end
-
-  def make_simple_arg({data, metadata}, type) do
-    style =
-      case Keyword.get(data, :style) do
-        {style_value, style_metadata} ->
-          Style.new(value: style_value, metadata: style_metadata)
-
-        nil ->
-          nil
-      end
-
-    {variable_name, variable_metadata} = Keyword.get(data, :variable)
-    variable = Variable.new(name: variable_name, metadata: variable_metadata)
-
-    SimpleArgument.new(
-      type: type,
-      style: style,
-      variable: variable,
-      metadata: metadata
-    )
-  end
-
-  def simple_arg(name, arg_style) do
-    atom_name = String.to_atom(name)
-
-    head = [
-      "{",
-      arg_name() |> unwrap_and_add_location() |> unwrap_and_tag(:variable),
-      ",",
-      name
-    ]
-
-    middle =
-      if arg_style do
-        [
-          optional(
-            seq([
-              ",",
-              arg_style |> unwrap_and_add_location() |> unwrap_and_tag(:style)
-            ])
-          )
-        ]
-      else
-        []
-      end
-
-    tail = [
-      "}"
-    ]
-
-    (head ++ middle ++ tail)
-    |> seq()
-    |> add_location()
-    |> map({__MODULE__, :make_simple_arg, [atom_name]})
   end
 end
