@@ -1,0 +1,21 @@
+message = messageText (argument messageText)*
+argument = noneArg | simpleArg | complexArg
+complexArg = choiceArg | pluralArg | selectArg | selectordinalArg
+
+noneArg = '{' argNameOrNumber '}'
+simpleArg = '{' argNameOrNumber ',' argType [',' argStyle] '}'
+choiceArg = '{' argNameOrNumber ',' "choice" ',' choiceStyle '}'
+pluralArg = '{' argNameOrNumber ',' "plural" ',' pluralStyle '}'
+selectArg = '{' argNameOrNumber ',' "select" ',' selectStyle '}'
+selectordinalArg = '{' argNameOrNumber ',' "selectordinal" ',' pluralStyle '}'
+
+choiceStyle: see ChoiceFormat
+pluralStyle: see PluralFormat
+selectStyle: see SelectFormat
+
+argNameOrNumber = argName | argNumber
+argName = [^[[:Pattern_Syntax:][:Pattern_White_Space:]]]+
+argNumber = '0' | ('1'..'9' ('0'..'9')*)
+
+argType = "number" | "date" | "time" | "spellout" | "ordinal" | "duration"
+argStyle = "short" | "medium" | "long" | "full" | "integer" | "currency" | "percent" | argStyleText | "::" argSkeletonText

@@ -1,0 +1,1 @@
+alias Icu.MessageFormat.Parser
